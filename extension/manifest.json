@@ -1,0 +1,9 @@
+{
+    "name": "Autoform",
+    "version": "0.0.0.1",
+    "manifest_version": 3,
+    "description": "LLenado automatico de llenado de formularios.",
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
