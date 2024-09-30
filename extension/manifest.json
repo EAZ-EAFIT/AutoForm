@@ -16,5 +16,9 @@
       "matches": ["<all_urls>"],
       "js": ["detect_forms.js"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
   }
