@@ -21,7 +21,7 @@ async function sendFormsDjango(forms) {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Message listener activated:", message);
 
-    if (message.from === "detect_forms" && message.type === "sendForms") {
+    if (message.from === "detect_forms" && message.type === "llenarForms") {
         console.log("Received message from detect_forms, sending to back_end");
         if (!message.forms || message.forms.length === 0) {
             console.log("Received forms are null or empty");

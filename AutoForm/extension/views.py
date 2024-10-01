@@ -16,8 +16,8 @@ def recibir_forms(request):
         json_form = json.loads(request.body)
         form_info = json_form["forms"]
         for key, value in form_info.items():
-            if value != 'csrfmiddlewaretoken':
-                form_info[key] = "hello"
+            if key != 'csrfmiddlewaretoken':
+                form_info[key] = "5890"
 
 
         response = {'status':'success', "forms":form_info}
