@@ -9,7 +9,8 @@
     "permissions": [
       "http://localhost:8000/",
       "activeTab",
-      "scripting"
+      "scripting",
+      "http://localhost/*"
   ],
   "content_scripts": [
     {
