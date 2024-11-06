@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h1 class="text-center mb-4 text-success">Formulario de Perfil Profesional</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <!-- Nombre del Perfil -->
+                <div class="mb-3 form-floating">
+                    <input type="text" id="nombre_perfil" name="nombre_perfil" class="form-control" maxlength="40" required>
+                    <label for="nombre_perfil">Nombre del Perfil:</label>
+                </div>
+
+                <!-- Expectativa Salarial -->
+                <div class="mb-3">
+                    <label for="expectativa_salario" class="form-label">Expectativa Salarial (COP):</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="expectativa_salario" name="expectativa_salario" class="form-control" step="0.01" required>
+                    </div>
+                </div>
+
+                <!-- Botón Enviar -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-outline-success">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

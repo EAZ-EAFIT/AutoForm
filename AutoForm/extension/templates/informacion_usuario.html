@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1 class="display-4 text-center">Bienvenido, {{ request.user.username }}</h1>
+
+        <!-- Card de información personal -->
+        <div class="card my-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Tu información personal</h3>
+                {% if informacion_personal %}
+                    <!-- Botón para eliminar la información personal -->
+                    <a href="{% url 'eliminar_informacion_usuario' %}" class="btn btn-danger" title="Eliminar información">
+                        Eliminar información
+                    </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if informacion_personal %}
+                    <!-- Tabla con la información personal -->
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Nombre</th>
+                                <td>{{ informacion_personal.nombre }}</td>
+                            </tr>
+                            <tr>
+                                <th>Apellidos</th>
+                                <td>{{ informacion_personal.apellidos }}</td>
+                            </tr>
+                            <tr>
+                                <th>Identificación</th>
+                                <td>{{ informacion_personal.identificacion }}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha de nacimiento</th>
+                                <td>{{ informacion_personal.fecha_nacimiento }}</td>
+                            </tr>
+                            <tr>
+                                <th>Género</th>
+                                <td>{{ informacion_personal.genero }}</td>
+                            </tr>
+                            <tr>
+                                <th>Residencia</th>
+                                <td>{{ informacion_personal.residencia }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Teléfonos -->
+                    <div class="mt-4">
+                        <p><strong>Teléfonos:</strong></p>
+                        <ul>
+                            {% for telefono in telefonos %}
+                                <li>+{{ telefono.extension }} {{ telefono.numero }}</li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <!-- Emails -->
+                        <p><strong>Emails:</strong></p>
+                        <ul>
+                            {% for email in emails %}
+                                <li>{{ email.email }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>Aún no has ingresado tu información personal. <a href="{% url 'llenado_informacion_usuario' %}" class="btn btn-link">Ingresa tu información aquí</a></p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Card de perfiles laborales -->
+        <div class="card my-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Perfiles laborales</h3>
+                <!-- Botón para crear un nuevo perfil laboral -->
+                <a href="{% url 'crear_perfil_laboral' %}" class="btn btn-success" title="Crear perfil laboral">
+                    Crear perfil
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if perfiles_laborales %}
+                        {% for perfil_laboral in perfiles_laborales %}
+                            <div class="col-md-3 mb-4">
+                                <!-- Card para cada perfil laboral sin header, fondo blanco y sin bordes redondeados -->
+                                <div class="card" style="background-color: #fff; border-radius: 0; border: 1px solid #ddd; padding: 10px;">
+                                    <p><strong>Nombre del perfil:</strong> {{ perfil_laboral.nombre_perfil }}</p>
+                                    <p><strong>Expectativa salarial:</strong> {{ perfil_laboral.expectativa_salario }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Aún no tienes perfiles laborales. <a href="{% url 'crear_perfil_laboral' %}" class="btn btn-link">Crea un perfil aquí</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}
