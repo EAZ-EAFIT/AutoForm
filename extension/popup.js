@@ -1,43 +1,47 @@
 document.addEventListener('DOMContentLoaded', async function() {
     try {
-        // Hacemos un fetch a Django para verificar si el usuario está autenticado
-        const response = await fetch('http://localhost:8000/extension/validar_sesion/'); // Ruta del API de Django
+        const response = await fetch('http://localhost:8000/extension/validar_sesion/');
         const data = await response.json();
         
         const resaltarButton = document.getElementById('resaltarForm');
         
         if (data.autenticado) {
-            // Si el usuario está autenticado, mostramos los botones
-
-            // Evento para resaltar formularios
             resaltarButton.addEventListener('click', resaltarForms);
 
             // Botón para llenar formularios (creado dinámicamente)
             const fillFormButton = document.createElement('button');
             fillFormButton.id = 'fillForm';
             fillFormButton.textContent = 'Llenar Formulario';
+            fillFormButton.classList.add('btn', 'btn-success', 'mt-2', 'btn-sm'); // Añadido w-100 para ancho completo
             document.body.appendChild(fillFormButton);
 
-            // Evento para llenar formularios
             fillFormButton.addEventListener('click', llenarForms);
 
         } else {
-            // Si no está autenticado, ocultamos el botón de resaltar
             resaltarButton.style.display = 'none';
 
-            // Mostramos un mensaje de no autenticado y enlaces
             document.body.innerHTML = `
-                <h1>No estás autenticado, por favor inicia sesión</h1>
-                <a href="http://localhost:8000/Users/login/">Login</a><br>
-                <a href="http://localhost:8000/Users/register/">Registrarse</a><br>
-                <a href="http://localhost:8000/extension/home/">Home</a>
+                <div class="text-center mx-auto" style="max-width: 400px; padding: 20px;">
+                    <h1 class="text-danger">No estás autenticado</h1>
+                    <p class="text-muted">Por favor, inicia sesión o regístrate</p>
+                    <a href="http://localhost:8000/Users/login/" class="btn btn-link btn-sm pb-1">Login</a>
+                    <a href="http://localhost:8000/Users/register/" class="btn btn-link btn-sm ms-2 pb-1">Registrarse</a>
+                    <a href="http://localhost:8000/extension/home/" class="btn btn-link btn-sm ms-2">Home</a>
+                </div>
             `;
         }
     } catch (error) {
         console.error("Error al verificar autenticación:", error);
-        document.body.innerHTML = "<h1>Error al verificar autenticación</h1>";
+        document.body.innerHTML = `
+            <div class="text-center text-danger mx-auto" style="max-width: 400px; padding: 20px;">
+                <h1>Error al verificar autenticación</h1>
+                <p>Ocurrió un problema al conectarse al servidor. Inténtelo más tarde.</p>
+            </div>
+        `;
     }
 });
+
+
 
 
 async function resaltarForms() {
