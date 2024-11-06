@@ -22,7 +22,7 @@ class Telefono(models.Model):
 
 
 class Email(models.Model):
-    email = models.EmailField(max_length=100, unique=True)
+    email = models.EmailField(max_length=100)
     id_informacion_personal = models.ForeignKey(Informacion_personal,on_delete=models.CASCADE)
 
 
