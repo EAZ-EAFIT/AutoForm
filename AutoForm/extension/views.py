@@ -14,27 +14,35 @@ def retornar_json(request):
 @csrf_exempt
 def recibir_forms(request):
     if (request.method == 'POST'):
+        print("request", request)
         print(request.body)
         json_form = json.loads(request.body)
         form_info = json_form["forms"]
+        print(form_info)
         for key, value in form_info.items():
             if key != 'csrfmiddlewaretoken':
-                form_info[key] = "5890"
+                print(key, value)
+                if key == 'phone':
+                    form_info[key] = "123456789"
+                elif key == 'name':
+                    form_info[key] = "Juanito"
+                elif key == 'last_name':
+                    form_info[key] = "Perez"
+                elif key == 'gender':
+                    form_info[key] = "Masculino"
+                else:
+                    form_info[key] = "5890"
 
 
         response = {'status':'success', "forms":form_info}
+        print(response)
         return JsonResponse(response)
     else:
         return {'status':'failure'}
 
-
-
 """Vista home"""
 def home(request):
     return render(request,'home.html')
-
-
-
 
 """Vista que recibe cookies, verifica si usuario se encuentra autenticado y le manda dicha info al front"""
 def validar_sesion(request):
