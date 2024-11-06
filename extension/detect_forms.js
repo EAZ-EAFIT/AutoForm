@@ -4,6 +4,7 @@ function detectarForms() {
     if (inputs.length === 0) {
         return {};
     }
+    console.log("Inputs",inputs);
     const forms_content = {};
     inputs.forEach(input => {
         if (input.name !== "") {
@@ -11,13 +12,13 @@ function detectarForms() {
         } else if (input.id !== "") {
             forms_content[input.id] = input.value;
         }
-/*         else {
-            const closest_div = input.closest('div');
-            const label = closest_div.querySelector('label');
-            if (label) {
-                forms_content[label.textContent] = input.value;
-            }
-        } */
+        const closest_div = input.closest('div');
+        const label = closest_div.querySelector('label');
+        if (label) {
+            console.log("Label",label);
+            console.log("text",label.textContent);
+            // forms_content[label.textContent] = input.value;
+        }
     });
     return forms_content;
 };
@@ -45,14 +46,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendForms().then((result) => {
             console.log('Received response from background:', result);
             const filled_forms = result.filled_forms.forms;
+
             for (const [name, value] of Object.entries(filled_forms)) {
 
                 const inputElement = document.querySelector(`[id="${name}"]`);
 
                 if (!inputElement) {
                     const inputElement = document.querySelector(`[name="${name}"]`);
+                    inputElement.value = value;
                 }
-                
+
                 if (inputElement) {
                     console.log("Setting value for", name, value);
                     inputElement.value = value;
