@@ -5,6 +5,9 @@ from django.shortcuts import redirect, render
 from .models import Informacion_personal,Telefono,Email,Perfil_laboral,Hoja_vida,Cargo
 from django.contrib.auth.decorators import login_required
 
+from .utils.form_embeddings import similarity_search
+
+
 
 def retornar_json(request):
     if request.method == 'GET':
@@ -14,7 +17,9 @@ def retornar_json(request):
 @csrf_exempt
 def recibir_forms(request):
     if (request.method == 'POST'):
-        print("request", request)
+        user = request.user
+        informacion_personal = Informacion_personal.objects.filter(usuario_id=user).first()
+    
         print(request.body)
         json_form = json.loads(request.body)
         form_info = json_form["forms"]
@@ -22,17 +27,31 @@ def recibir_forms(request):
         for key, value in form_info.items():
             if key != 'csrfmiddlewaretoken':
                 print(key, value)
-                if key == 'phone':
-                    form_info[key] = "123456789"
-                elif key == 'name':
-                    form_info[key] = "Juanito"
-                elif key == 'last_name':
-                    form_info[key] = "Perez"
-                elif key == 'gender':
-                    form_info[key] = "Masculino"
-                else:
-                    form_info[key] = "5890"
+                processed_field = similarity_search(key)
+                
+                print(processed_field)
 
+                if key == 'phone' or processed_field == 'telefono':
+                    telefono = Telefono.objects.filter(id_informacion_personal=informacion_personal).first() # Cambiar a escoger telefono
+                    form_info[key] = '+' + telefono.extension + ' ' + telefono.numero
+
+                elif key == 'name' or processed_field == 'nombre' or processed_field == 'name':
+                    form_info[key] = informacion_personal.nombre
+                elif key == 'last_name' or processed_field == 'apellidos' or processed_field == 'last_name':
+                    form_info[key] = informacion_personal.apellidos
+                elif key == 'gender' or processed_field == 'genero' or processed_field == 'gender':    
+                    form_info[key] = informacion_personal.genero
+                elif key == 'email' or processed_field == 'email':
+                    email = Email.objects.filter(id_informacion_personal=informacion_personal).first()
+                    form_info[key] = str(email.email)
+                elif key == 'id' or processed_field == 'identificacion' or processed_field == 'id':
+                    form_info[key] = informacion_personal.identificacion
+                elif key == 'address' or processed_field == 'direccion' or processed_field == 'address':
+                    form_info[key] = informacion_personal.residencia
+                elif key == 'birthdate' or processed_field == 'fecha_nacimiento' or processed_field == 'birthdate':
+                    form_info[key] = str(informacion_personal.fecha_nacimiento)
+                else:
+                    form_info[key] = 'No se encontró información'
 
         response = {'status':'success', "forms":form_info}
         print(response)

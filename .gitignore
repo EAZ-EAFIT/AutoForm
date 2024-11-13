@@ -1,2 +1,3 @@
 /venv
 *.pyc
+hf_token.json
