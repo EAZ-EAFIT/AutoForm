@@ -50,24 +50,24 @@
                     </table>
 
                     <!-- Teléfonos -->
-                    <div class="mt-4">
-                        <p><strong>Teléfonos:</strong></p>
+                    <div class="mt-4 ">
+                        <p class="text-dark"><strong>Teléfonos:</strong></p>
                         <ul>
                             {% for telefono in telefonos %}
-                                <li>+{{ telefono.extension }} {{ telefono.numero }}</li>
+                                <li class="text-dark">+{{ telefono.extension }} {{ telefono.numero }}</li>
                             {% endfor %}
                         </ul>
                         
                         <!-- Emails -->
-                        <p><strong>Emails:</strong></p>
+                        <p class="text-dark"><strong>Emails:</strong></p>
                         <ul>
                             {% for email in emails %}
-                                <li>{{ email.email }}</li>
+                                <li class="text-dark">{{ email.email }}</li>
                             {% endfor %}
                         </ul>
                     </div>
                 {% else %}
-                    <p>Aún no has ingresado tu información personal. <a href="{% url 'llenado_informacion_usuario' %}" class="btn btn-link">Ingresa tu información aquí</a></p>
+                    <p class="text-dark">Aún no has ingresado tu información personal. <a href="{% url 'llenado_informacion_usuario' %}" class="btn btn-link">Ingresa tu información aquí</a></p>
                 {% endif %}
             </div>
         </div>
@@ -96,7 +96,7 @@
 
                                         <div class="card-body">
                                             <h5 class="card-title text-primary mb-3">{{ perfil_laboral.nombre_perfil }}</h5>
-                                            <p class="card-text">
+                                            <p class="text-dark" class="card-text">
                                                 <strong>Expectativa Salarial:</strong><br>
                                                 ${{ perfil_laboral.expectativa_salario|floatformat:2 }}
                                             </p>

@@ -1,0 +1,16 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding: 0;
+    background: linear-gradient(135deg, #00000b, #01001f);
+    color: aliceblue;
+}
+
+.card {
+    background-color:#fafaff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(255, 255, 255, 0.2);
+    color: black;
+}
