@@ -191,7 +191,7 @@ def recomendar_mejoras(request):
 
             # Leer el token de Hugging Face desde el archivo JSON
             with open(os.path.join(os.path.dirname(__file__), 'utils', 'hf_token.json')) as f:
-                hf_token = json.load(f)['hf_token']
+                hf_token = json.load(f)['hf_token_LLM']
 
             # Extraer texto del PDF
             try:
@@ -213,7 +213,7 @@ def recomendar_mejoras(request):
                 'Content-Type': 'application/json'
             }
             payload = {
-                "inputs": f"Revise el siguiente currículum y proporcione solo las sugerencias de mejora, se generoso con las palabras:\n{text_content}",
+                "inputs": f"<s> [INST] Revise el siguiente currículum y proporcione sugerencias de mejora, el objetivo es lograr un perfil laboral atractivo con el que contraten facilente:   Este es el perfil laboral ({text_content}), de sus recomendaciones[/INST]",
                 "parameters": {
                     "return_full_text": False  
                 }
@@ -237,8 +237,6 @@ def recomendar_mejoras(request):
                 suggestions = [s.strip() for s in cleaned_text.split("1.") if s]  
             else:
                 suggestions = []
-
-
     else:
         form = pdf_upload()
 

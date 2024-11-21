@@ -8,7 +8,7 @@ import json
 from .embedding_source import EMBEDDING_SOURCE, model_id
 
 with open(os.path.join(os.path.dirname(__file__), 'hf_token.json')) as f:
-    hf_token = json.load(f)['hf_token']
+    hf_token = json.load(f)['hf_token_embeddings']
 
 api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{model_id}"
 headers = {"Authorization": f"Bearer {hf_token}"}
