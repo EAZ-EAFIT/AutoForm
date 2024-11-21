@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <div class="container my-4">
         <h1 class="display-4 text-center">Bienvenido, {{ request.user.username }}</h1>
 
@@ -83,18 +84,38 @@
             <div class="card-body">
                 <div class="row">
                     {% if perfiles_laborales %}
-                        {% for perfil_laboral in perfiles_laborales %}
-                            <div class="col-md-3 mb-4">
-                                <!-- Card para cada perfil laboral sin header, fondo blanco y sin bordes redondeados -->
-                                <div class="card" style="background-color: #fff; border-radius: 0; border: 1px solid #ddd; padding: 10px;">
-                                    <p><strong>Nombre del perfil:</strong> {{ perfil_laboral.nombre_perfil }}</p>
-                                    <p><strong>Expectativa salarial:</strong> {{ perfil_laboral.expectativa_salario }}</p>
+                        <div class="row">
+                            {% for perfil_laboral in perfiles_laborales %}
+                                <div class="col-md-3 mb-4">
+                                    <!-- Card con bordes más definidos -->
+                                    <div class="card shadow-sm" style="border: 1px solid #ccc; border-radius: 10px; position: relative;">
+                                        <!-- Icono de basura en la esquina superior derecha -->
+                                        <a href="{% url 'eliminar_perfil_laboral' perfil_laboral.pk %}" class="btn btn-light text-danger position-absolute top-0 end-0 mt-2 me-2" style="z-index: 10;">
+                                            <i class="fa-solid fa-trash-alt" style="font-size: 1rem;"></i> <!-- Icono más pequeño -->
+                                        </a>
+
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary mb-3">{{ perfil_laboral.nombre_perfil }}</h5>
+                                            <p class="card-text">
+                                                <strong>Expectativa Salarial:</strong><br>
+                                                ${{ perfil_laboral.expectativa_salario|floatformat:2 }}
+                                            </p>
+                                            <!-- Enlace hacia la hoja de vida con icono Font Awesome -->
+                                            <a href="{{ perfil_laboral.hoja_de_vida.url }}" target="_blank" class="btn btn-light border d-flex align-items-center justify-content-center" style="color: #0d6efd; border-radius: 8px;">
+                                                <i class="fa-solid fa-file-alt me-2" style="font-size: 1.2rem;"></i> <!-- Icono de archivo -->
+                                                Ver Hoja de Vida
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     {% else %}
                         <p>Aún no tienes perfiles laborales. <a href="{% url 'crear_perfil_laboral' %}" class="btn btn-link">Crea un perfil aquí</a></p>
                     {% endif %}
+
+
+
                 </div>
             </div>
         </div>

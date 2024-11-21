@@ -13,5 +13,8 @@ urlpatterns = [
     path('informacion_usuario/', views.informacion_usuario, name = "informacion_usuario"),
 
     path('eliminar_informacion_usuario/', views.eliminar_informacion_usuario, name = "eliminar_informacion_usuario"),
+    path('recomendar_mejoras/', views.recomendar_mejoras, name='recomendar_mejoras'),
+    path('eliminar_perfil_laboral/<int:perfil_id>/', views.eliminar_perfil_laboral, name='eliminar_perfil_laboral'),
+
 
 ]

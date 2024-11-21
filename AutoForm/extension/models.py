@@ -32,6 +32,7 @@ class Perfil_laboral(models.Model):
     nombre_perfil = models.CharField(max_length=40)
     expectativa_salario = models.FloatField()
     id_usuario = models.ForeignKey(User,on_delete=models.CASCADE)
+    hoja_de_vida = models.FileField(upload_to='hojas_de_vida/', blank=True, null=True)  # Campo para cargar el PDF
 
 
 

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Recomendaciones para tu CV</h1>
+
+    <!-- Formulario de carga de PDF -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-dark w-100">Subir CV</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sugerencias -->
+    {% if suggestions %}
+        <div class="mt-5">
+            <h2 class="text-center">Sugerencias de mejora</h2>
+            <div class="list-group">
+                {% for suggestion in suggestions %}
+                    <div class="list-group-item">
+                        {{ suggestion }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="mt-5 alert alert-danger text-center" role="alert">
+            <strong>No se pudieron generar recomendaciones. Intenta nuevamente.</strong>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

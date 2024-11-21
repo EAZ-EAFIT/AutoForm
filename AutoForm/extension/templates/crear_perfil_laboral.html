@@ -6,7 +6,7 @@
     <div class="card mx-auto" style="max-width: 600px;">
         <div class="card-body">
             <h1 class="text-center mb-4 text-success">Formulario de Perfil Profesional</h1>
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">  <!-- Asegúrate de incluir enctype -->
                 {% csrf_token %}
                 <!-- Nombre del Perfil -->
                 <div class="mb-3 form-floating">
@@ -21,6 +21,12 @@
                         <span class="input-group-text">$</span>
                         <input type="number" id="expectativa_salario" name="expectativa_salario" class="form-control" step="0.01" required>
                     </div>
+                </div>
+
+                <!-- Subir Hoja de Vida -->
+                <div class="mb-3">
+                    <label for="hoja_de_vida" class="form-label">Subir Hoja de Vida (PDF):</label>
+                    <input type="file" id="hoja_de_vida" name="hoja_de_vida" class="form-control" accept=".pdf" required>
                 </div>
 
                 <!-- Botón Enviar -->

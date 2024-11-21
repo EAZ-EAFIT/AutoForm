@@ -1,12 +1,14 @@
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import redirect, render
 from .models import Informacion_personal,Telefono,Email,Perfil_laboral,Hoja_vida,Cargo
 from django.contrib.auth.decorators import login_required
-
 from .utils.form_embeddings import similarity_search
-
+from django.views.decorators.csrf import csrf_exempt
+from .forms import pdf_upload
+from PyPDF2 import PdfReader
+import requests
+import os
 
 
 def retornar_json(request):
@@ -117,7 +119,8 @@ def crear_perfil_laboral(request):
     if request.method == "POST":
         nombre_perfil = request.POST.get('nombre_perfil')
         expectativa_salario = request.POST.get('expectativa_salario')
-        nuevo_perfil_laboral = Perfil_laboral(nombre_perfil=nombre_perfil,expectativa_salario=expectativa_salario,id_usuario=request.user)
+        hoja_de_vida = request.FILES.get('hoja_de_vida')  # Capturar el archivo subido
+        nuevo_perfil_laboral = Perfil_laboral(nombre_perfil=nombre_perfil,expectativa_salario=expectativa_salario,id_usuario=request.user,hoja_de_vida=hoja_de_vida)
         nuevo_perfil_laboral.save()
         return redirect('informacion_usuario')
     
@@ -164,3 +167,79 @@ def eliminar_informacion_usuario(request):
     informacion_usuario.delete()
 
     return redirect('informacion_usuario')
+
+
+
+
+@login_required
+def eliminar_perfil_laboral(request,perfil_id):
+    perfil_laboral = Perfil_laboral.objects.get(pk = perfil_id)
+    perfil_laboral.delete()
+    return redirect('informacion_usuario')
+
+
+
+
+
+def recomendar_mejoras(request):
+    suggestions = None
+
+    if request.method == 'POST':
+        form = pdf_upload(request.POST, request.FILES)
+        if form.is_valid():
+            pdf_file = request.FILES['pdf_file']
+
+            # Leer el token de Hugging Face desde el archivo JSON
+            with open(os.path.join(os.path.dirname(__file__), 'utils', 'hf_token.json')) as f:
+                hf_token = json.load(f)['hf_token']
+
+            # Extraer texto del PDF
+            try:
+                pdf_reader = PdfReader(pdf_file)
+                text_content = ""
+                for page in pdf_reader.pages:
+                    text_content += page.extract_text() + "\n"
+
+                # Verificar que se haya extraído texto
+                if not text_content.strip():
+                    return JsonResponse({"error": "No se pudo extraer texto del PDF."}, status=400)
+            except Exception as e:
+                return JsonResponse({"error": f"Error al leer el PDF: {str(e)}"}, status=500)
+
+            
+            api_url = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1" 
+            headers = {
+                'Authorization': f'Bearer {hf_token}',
+                'Content-Type': 'application/json'
+            }
+            payload = {
+                "inputs": f"Revise el siguiente currículum y proporcione solo las sugerencias de mejora, se generoso con las palabras:\n{text_content}",
+                "parameters": {
+                    "return_full_text": False  
+                }
+            }
+
+            # Enviar solicitud a Hugging Face
+            response = requests.post(api_url, headers=headers, json=payload)
+
+            if response.status_code != 200:
+                return JsonResponse({"error": "Error en la solicitud a la API de Hugging Face.", "details": response.text}, status=500)
+
+            # Obtener la respuesta de Hugging Face
+            response_data = response.json()
+            
+            print(response_data)
+            # Procesar y limpiar la respuesta
+            if isinstance(response_data, list) and "generated_text" in response_data[0]:
+                # Extraer texto, eliminar caracteres innecesarios, y dividirlo en sugerencias
+                raw_text = response_data[0]["generated_text"]
+                cleaned_text = raw_text.replace("\n", " ").replace("Sugerencias:", "").strip()
+                suggestions = [s.strip() for s in cleaned_text.split("1.") if s]  
+            else:
+                suggestions = []
+
+
+    else:
+        form = pdf_upload()
+
+    return render(request, 'sugerencias_cv.html', {'form': form, 'suggestions': suggestions})
